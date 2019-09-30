@@ -2972,7 +2972,7 @@ var Language = function () {
         PL: 'Polish',
         PT: 'Português',
         RU: 'Русский',
-        TH: 'Thai',
+        // TH   : 'Thai', // TODO: uncomment to enable Thai language
         VI: 'Tiếng Việt',
         ZH_CN: '简体中文',
         ZH_TW: '繁體中文'
@@ -15713,12 +15713,13 @@ var DepositWithdraw = function () {
         } else {
             var popup_valid_for_url = Url.urlFor('cashier/forwardws') + '?action=deposit';
             var popup_valid = popup_valid_for_url === window.location.href;
+            var client_currency = Client.get('currency');
             if (popup_valid && Client.canChangeCurrency(State.getResponse('statement'), State.getResponse('mt5_login_list'))) {
                 Dialog.confirm({
                     id: 'deposit_currency_change_popup_container',
                     ok_text: localize('Yes I\'m sure'),
                     cancel_text: localize('Cancel'),
-                    localized_title: localize('Are you sure?'),
+                    localized_title: localize('Are you sure you want to deposit in [_1]?', [client_currency]),
                     localized_message: localize('You will not be able to change your fiat account\'s currency after making this deposit. Are you sure you want to proceed?'),
                     localized_footnote: localize('[_1]No, change my fiat account\'s currency now[_2]', ['<a href=' + Url.urlFor('user/accounts') + '>', '</a>']),
                     onAbort: function onAbort() {
@@ -15729,7 +15730,7 @@ var DepositWithdraw = function () {
 
             $iframe = $(container).find('#cashier_iframe');
 
-            if (Currency.isCryptocurrency(Client.get('currency'))) {
+            if (Currency.isCryptocurrency(client_currency)) {
                 $iframe.height(default_iframe_height);
             } else {
                 // Automatically adjust iframe height based on contents
@@ -25792,7 +25793,6 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 var DocumentUploader = __webpack_require__(/*! @binary-com/binary-document-uploader */ "./node_modules/@binary-com/binary-document-uploader/DocumentUploader.js");
 var Cookies = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/src/js.cookie.js");
 var Onfido = __webpack_require__(/*! onfido-sdk-ui */ "./node_modules/onfido-sdk-ui/lib/index.js");
-var BinaryPjax = __webpack_require__(/*! ../../../base/binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
 var Client = __webpack_require__(/*! ../../../base/client */ "./src/javascript/app/base/client.js");
 var Header = __webpack_require__(/*! ../../../base/header */ "./src/javascript/app/base/header.js");
 var BinarySocket = __webpack_require__(/*! ../../../base/socket */ "./src/javascript/app/base/socket.js");
@@ -26691,9 +26691,19 @@ var Authenticate = function () {
         });
     };
 
+    var checkIsRequired = function checkIsRequired(authentication_status) {
+        var identity = authentication_status.identity,
+            document = authentication_status.document,
+            needs_verification = authentication_status.needs_verification;
+
+        var is_not_required = identity.status === 'none' && document.status === 'none' && !needs_verification.length;
+
+        return !is_not_required;
+    };
+
     var initAuthentication = function () {
         var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-            var authentication_status, onfido_token, identity, document, needs_verification;
+            var authentication_status, onfido_token, identity, document, is_fully_authenticated;
             return regeneratorRuntime.wrap(function _callee2$(_context2) {
                 while (1) {
                     switch (_context2.prev = _context2.next) {
@@ -26719,14 +26729,11 @@ var Authenticate = function () {
                             return _context2.abrupt('return');
 
                         case 10:
-                            identity = authentication_status.identity, document = authentication_status.document, needs_verification = authentication_status.needs_verification;
+                            identity = authentication_status.identity, document = authentication_status.document;
+                            is_fully_authenticated = identity.status === 'verified' && document.status === 'verified';
 
 
-                            if (identity.status === 'none' && document.status === 'none' && !needs_verification.length) {
-                                BinaryPjax.load(Url.urlFor('user/settingsws'));
-                            }
-
-                            if (identity.status === 'verified' && document.status === 'verified') {
+                            if (is_fully_authenticated) {
                                 $('#authentication_tab').setVisibility(0);
                                 $('#authentication_verified').setVisibility(1);
                             }
@@ -26829,10 +26836,42 @@ var Authenticate = function () {
         };
     }();
 
-    var onLoad = function onLoad() {
-        initTab();
-        initAuthentication();
-    };
+    var onLoad = function () {
+        var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+            var authentication_status, is_required;
+            return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                while (1) {
+                    switch (_context3.prev = _context3.next) {
+                        case 0:
+                            _context3.next = 2;
+                            return getAuthenticationStatus();
+
+                        case 2:
+                            authentication_status = _context3.sent;
+                            is_required = checkIsRequired(authentication_status);
+
+
+                            if (is_required) {
+                                initTab();
+                                initAuthentication();
+                            } else {
+                                $('#authentication_tab').setVisibility(0);
+                                $('#not_required_msg').setVisibility(1);
+                                $('#authentication_loading').setVisibility(0);
+                            }
+
+                        case 5:
+                        case 'end':
+                            return _context3.stop();
+                    }
+                }
+            }, _callee3, undefined);
+        }));
+
+        return function onLoad() {
+            return _ref3.apply(this, arguments);
+        };
+    }();
 
     var onUnload = function onUnload() {
         if (onfido) {
@@ -27829,21 +27868,9 @@ var Settings = function () {
             $('.real').setVisibility(!Client.get('is_virtual'));
 
             var status = State.getResponse('get_account_status.status') || [];
-            var authentication = State.getResponse('get_account_status.authentication') || {};
-            var identity = authentication.identity,
-                document = authentication.document,
-                needs_verification = authentication.needs_verification;
 
             if (!/social_signup/.test(status)) {
                 $('#change_password').setVisibility(1);
-            }
-
-            if (identity && document && needs_verification) {
-                if (!needs_verification.length && identity.status === 'none' && document.status === 'none') {
-                    $('#authenticate').setVisibility(0);
-                } else {
-                    $('#authenticate').setVisibility(1);
-                }
             }
 
             // Professional Client menu should only be shown to maltainvest accounts.
@@ -35233,7 +35260,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = '19114'; // you can insert Application ID of your registered application here
+    var user_app_id = ''; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
