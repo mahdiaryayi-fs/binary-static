@@ -2972,7 +2972,7 @@ var Language = function () {
         PL: 'Polish',
         PT: 'Português',
         RU: 'Русский',
-        // TH   : 'Thai', // TODO: uncomment to enable Thai language
+        TH: 'Thai',
         VI: 'Tiếng Việt',
         ZH_CN: '简体中文',
         ZH_TW: '繁體中文'
@@ -35899,11 +35899,6 @@ var Platforms = function () {
                 var el_button = getElementById('app_' + os.name);
                 el_button.setAttribute('href', os.download_url);
             });
-        });
-        fetch('https://grid.binary.me/version.json').then(function (response) {
-            return response.json();
-        }).then(function (gridapp) {
-            $('.download-grid-app').attr('href', 'https://grid.binary.me/download/' + gridapp.name);
         });
         var os = OSDetect();
         var android_app = document.querySelector('.android-download-grid-app');
