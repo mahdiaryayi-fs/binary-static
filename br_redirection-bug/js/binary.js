@@ -1075,7 +1075,7 @@ var GTM = function () {
             data.event = login_event;
             BinarySocket.wait('mt5_login_list').then(function (response) {
                 (response.mt5_login_list || []).forEach(function (obj) {
-                    var acc_type = (ClientBase.getMT5AccountType(obj.group) || '').replace('real_vanuatu', 'financial').replace('vanuatu_', '').replace(/svg/, 'gaming'); // i.e. financial_cent, demo_cent, demo_gaming, real_gaming
+                    var acc_type = (ClientBase.getMT5AccountType(obj.group) || '').replace('real_vanuatu', 'financial').replace('real_svg', 'financial').replace('vanuatu_', '').replace('svg_', '').replace(/svg/, 'gaming'); // i.e. financial_cent, demo_cent, demo_gaming, real_gaming
                     if (acc_type) {
                         data['mt5_' + acc_type + '_id'] = obj.login;
                     }
@@ -9910,7 +9910,6 @@ var ProfitTable = __webpack_require__(/*! ../pages/user/account/profit_table/pro
 var Settings = __webpack_require__(/*! ../pages/user/account/settings */ "./src/javascript/app/pages/user/account/settings.js");
 var APIToken = __webpack_require__(/*! ../pages/user/account/settings/api_token */ "./src/javascript/app/pages/user/account/settings/api_token.js");
 var AuthorisedApps = __webpack_require__(/*! ../pages/user/account/settings/authorised_apps */ "./src/javascript/app/pages/user/account/settings/authorised_apps.js");
-var CashierPassword = __webpack_require__(/*! ../pages/user/account/settings/cashier_password */ "./src/javascript/app/pages/user/account/settings/cashier_password.js");
 var FinancialAssessment = __webpack_require__(/*! ../pages/user/account/settings/financial_assessment */ "./src/javascript/app/pages/user/account/settings/financial_assessment.js");
 var IPHistory = __webpack_require__(/*! ../pages/user/account/settings/iphistory/iphistory */ "./src/javascript/app/pages/user/account/settings/iphistory/iphistory.js");
 var Limits = __webpack_require__(/*! ../pages/user/account/settings/limits/limits */ "./src/javascript/app/pages/user/account/settings/limits/limits.js");
@@ -9961,7 +9960,6 @@ var pages_config = {
     authorised_appsws: { module: AuthorisedApps, is_authenticated: true },
     careers: { module: StaticPages.Careers },
     cashier: { module: Cashier },
-    cashier_passwordws: { module: CashierPassword, is_authenticated: true, only_real: true },
     cfds: { module: GetStarted.CFDs },
     // charity                  : { module: Charity },
     change_passwordws: { module: ChangePassword, is_authenticated: true },
@@ -11912,9 +11910,7 @@ var BinarySocketGeneral = function () {
                     break;
                 }
             case 'RateLimit':
-                if (msg_type !== 'cashier_password') {
-                    Header.displayNotification(localize('You have reached the rate limit of requests per second. Please try later.'), true, 'RATE_LIMIT');
-                }
+                Header.displayNotification(localize('You have reached the rate limit of requests per second. Please try later.'), true, 'RATE_LIMIT');
                 break;
             case 'InvalidAppID':
                 Header.displayNotification(response.error.message, true, 'INVALID_APP_ID');
@@ -15496,7 +15492,6 @@ module.exports = Cashier;
 "use strict";
 
 
-var setShouldRedirect = __webpack_require__(/*! ../user/account/settings/cashier_password */ "./src/javascript/app/pages/user/account/settings/cashier_password.js").setShouldRedirect;
 var BinaryPjax = __webpack_require__(/*! ../../base/binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
 var Client = __webpack_require__(/*! ../../base/client */ "./src/javascript/app/base/client.js");
 var BinarySocket = __webpack_require__(/*! ../../base/socket */ "./src/javascript/app/base/socket.js");
@@ -15525,13 +15520,7 @@ var DepositWithdraw = function () {
 
     var container = '#deposit_withdraw';
 
-    var init = function init(cashier_password) {
-        if (cashier_password) {
-            showMessage('cashier_locked_message');
-            setShouldRedirect(true);
-            return;
-        }
-
+    var init = function init() {
         if (!Client.get('currency')) {
             BinaryPjax.load(Url.urlFor('user/set-currency') + '#redirect_' + cashier_type);
             return;
@@ -15756,20 +15745,14 @@ var DepositWithdraw = function () {
     var onLoad = function onLoad() {
         $loading = $('#loading_cashier');
         getCashierType();
-        var req_cashier_password = BinarySocket.send({ cashier_password: 1 });
         var req_get_account_status = BinarySocket.send({ get_account_status: 1 });
         var req_statement = BinarySocket.send({ statement: 1, limit: 1 });
         var req_mt5_login_list = BinarySocket.send({ mt5_login_list: 1 });
 
-        Promise.all([req_cashier_password, req_get_account_status, req_statement, req_mt5_login_list]).then(function () {
+        Promise.all([req_get_account_status, req_statement, req_mt5_login_list]).then(function () {
             // cannot use State.getResponse because we want to check error which is outside of response[msg_type]
-            var response_cashier_password = State.get(['response', 'cashier_password']);
             var response_get_account_status = State.get(['response', 'get_account_status']);
-            if ('error' in response_cashier_password) {
-                showError('custom_error', response_cashier_password.error.code === 'RateLimit' ? localize('You have reached the rate limit of requests per second. Please try later.') : response_cashier_password.error.message);
-            } else if (response_cashier_password.cashier_password === 1) {
-                showMessage('cashier_locked_message'); // Locked by client
-            } else if (!response_get_account_status.error && /cashier_locked/.test(response_get_account_status.get_account_status.status)) {
+            if (!response_get_account_status.error && /cashier_locked/.test(response_get_account_status.get_account_status.status)) {
                 showError('custom_error', localize('Your cashier is locked.')); // Locked from BO
             } else {
                 var limit = State.getResponse('get_limits.remainder');
@@ -15777,7 +15760,7 @@ var DepositWithdraw = function () {
                     showError('custom_error', localize('You have reached the withdrawal limit.'));
                 } else {
                     BinarySocket.wait('get_settings').then(function () {
-                        init(response_cashier_password.cashier_password);
+                        init();
                     });
                 }
             }
@@ -28236,115 +28219,6 @@ module.exports = AuthorisedApps;
 
 /***/ }),
 
-/***/ "./src/javascript/app/pages/user/account/settings/cashier_password.js":
-/*!****************************************************************************!*\
-  !*** ./src/javascript/app/pages/user/account/settings/cashier_password.js ***!
-  \****************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var BinaryPjax = __webpack_require__(/*! ../../../../base/binary_pjax */ "./src/javascript/app/base/binary_pjax.js");
-var BinarySocket = __webpack_require__(/*! ../../../../base/socket */ "./src/javascript/app/base/socket.js");
-var FormManager = __webpack_require__(/*! ../../../../common/form_manager */ "./src/javascript/app/common/form_manager.js");
-var localize = __webpack_require__(/*! ../../../../../_common/localize */ "./src/javascript/_common/localize.js").localize;
-
-var CashierPassword = function () {
-    var form_id = '#frm_cashier_password';
-
-    var should_redirect = false;
-
-    var $form = void 0;
-
-    var onLoad = function onLoad() {
-        $form = $(form_id);
-
-        BinarySocket.wait('authorize').then(function () {
-            BinarySocket.send({ cashier_password: 1 }).then(function (response) {
-                return init(response);
-            });
-        });
-    };
-
-    var updatePage = function updatePage(config) {
-        $('legend').text(config.legend);
-        $('#lockInfo').text(config.info);
-        $form.find('button').html(config.button);
-    };
-
-    var init = function init(response) {
-        var locked = response.cashier_password;
-        if (response.error) {
-            $('#form_message').addClass('notice-msg center-text').text(response.error.code === 'RateLimit' ? localize('You have reached the rate limit of requests per second. Please try later.') : response.error.message);
-            return;
-        } else if (locked) {
-            updatePage({
-                legend: localize('Unlock Cashier'),
-                info: localize('Your cashier is locked as per your request - to unlock it, please enter the password.'),
-                button: localize('Unlock Cashier')
-            });
-            $('#repeat_password_row').setVisibility(0);
-        } else {
-            updatePage({
-                legend: localize('Lock Cashier'),
-                info: localize('An additional password can be used to restrict access to the cashier.'),
-                button: localize('Update')
-            });
-            $('#repeat_password_row').setVisibility(1);
-        }
-        $form.setVisibility(1);
-        FormManager.init(form_id, [{ selector: '#cashier_password', validations: ['req', locked ? ['length', { min: 6, max: 25 }] : 'password'], request_field: locked ? 'unlock_password' : 'lock_password', re_check_field: locked ? null : '#repeat_cashier_password' }, { selector: '#repeat_cashier_password', validations: ['req', ['compare', { to: '#cashier_password' }]], exclude_request: 1 }, { request_field: 'cashier_password', value: 1 }]);
-        FormManager.handleSubmit({
-            form_selector: form_id,
-            fnc_response_handler: handleResponse
-        });
-    };
-
-    var handleResponse = function handleResponse(response) {
-        var $form_error = $('#form_error');
-        var $form_message = $('#form_message');
-        $form_message.removeClass('notice-msg center-text').text('');
-        $form_error.setVisibility(0);
-        if (response.error) {
-            if (response.error.code === 'RateLimit') {
-                $form.setVisibility(0);
-                $form_message.addClass('notice-msg center-text').text(localize('You have reached the rate limit of requests per second. Please try later.'));
-            } else {
-                var message = response.error.message;
-                if (response.error.code === 'InputValidationFailed') {
-                    message = localize('Sorry, you have entered an incorrect cashier password');
-                }
-                $form_error.text(message).setVisibility(1);
-            }
-        } else {
-            $form.setVisibility(0);
-            $form_message.text(localize('Your settings have been updated successfully.'));
-            setTimeout(redirect, 2000);
-        }
-    };
-
-    var redirect = function redirect() {
-        if (should_redirect) {
-            should_redirect = false;
-            BinaryPjax.loadPreviousUrl();
-        }
-    };
-
-    return {
-        onLoad: onLoad,
-
-        setShouldRedirect: function setShouldRedirect(bool) {
-            should_redirect = bool;
-        }
-    };
-}();
-
-module.exports = CashierPassword;
-
-/***/ }),
-
 /***/ "./src/javascript/app/pages/user/account/settings/financial_assessment.js":
 /*!********************************************************************************!*\
   !*** ./src/javascript/app/pages/user/account/settings/financial_assessment.js ***!
@@ -28410,7 +28284,7 @@ var FinancialAssessment = function () {
         }
 
         // display Trading Experience only for financial & MT5 financial accounts
-        var is_mt5_financial = /labuan_advanced|real_vanuatu_(standard|advanced|mamm_advanced)/.test(localStorage.getItem('financial_assessment_redirect'));
+        var is_mt5_financial = /labuan_advanced/.test(localStorage.getItem('financial_assessment_redirect'));
         $('#trading_experience_form').setVisibility(is_mt5_financial || Client.isAccountOfType('financial'));
 
         Object.keys(financial_assessment).forEach(function (key) {
@@ -29271,7 +29145,7 @@ var PersonalDetails = function () {
                 }
                 var get_settings = data.get_settings;
                 var is_tax_req = +State.getResponse('landing_company.config.tax_details_required') === 1;
-                var is_for_mt_financial = /real_vanuatu_(standard|advanced)/.test(redirect_url);
+                var is_for_mt_financial = /real_svg_standard|labuan_advanced/.test(redirect_url);
                 var has_required_mt = is_for_mt_financial && is_tax_req ? get_settings.tax_residence && get_settings.tax_identification_number && get_settings.citizen : get_settings.citizen // only check Citizen if user selects mt volatility account
                 ;
                 if (redirect_url && has_required_mt) {
@@ -31433,6 +31307,9 @@ var MetaTraderConfig = function () {
 
                     var response_get_settings = State.getResponse('get_settings');
                     if (is_financial) {
+                        var is_svg = State.getResponse('landing_company.mt_financial_company.' + getMTFinancialAccountType(acc_type) + '.shortcode') === 'svg';
+                        if (is_svg) resolve();
+
                         var is_ok = true;
                         BinarySocket.wait('get_account_status', 'landing_company').then(function () {
                             if (is_maltainvest && !has_financial_account) resolve();
@@ -31468,7 +31345,7 @@ var MetaTraderConfig = function () {
                                 showAssessment('.assessment');
                                 _is_ok = false;
                             }
-                            if (!response_get_settings.citizen && !(is_maltainvest && !has_financial_account)) {
+                            if (!response_get_settings.citizen && !(is_maltainvest && !has_financial_account) && accounts_info[acc_type].mt5_account_type) {
                                 showCitizenshipMessage();
                                 _is_ok = false;
                             }
@@ -31619,22 +31496,16 @@ var MetaTraderConfig = function () {
                     if (Client.get('is_virtual')) {
                         resolve(needsRealMessage());
                     } else {
-                        BinarySocket.send({ cashier_password: 1 }).then(function (response) {
-                            if (!response.error && response.cashier_password === 1) {
-                                resolve(localize('Your cashier is locked as per your request - to unlock it, please click <a href="[_1]">here</a>.', urlFor('user/security/cashier_passwordws')));
+                        BinarySocket.send({ get_account_status: 1 }).then(function (response_status) {
+                            if (!response_status.error && /cashier_locked/.test(response_status.get_account_status.status)) {
+                                resolve(localize('Your cashier is locked.')); // Locked from BO
                             } else {
-                                BinarySocket.send({ get_account_status: 1 }).then(function (response_status) {
-                                    if (!response_status.error && /cashier_locked/.test(response_status.get_account_status.status)) {
-                                        resolve(localize('Your cashier is locked.')); // Locked from BO
-                                    } else {
-                                        var limit = State.getResponse('get_limits.remainder');
-                                        if (typeof limit !== 'undefined' && +limit < getMinMT5TransferValue(Client.get('currency'))) {
-                                            resolve(localize('You have reached the limit.'));
-                                        } else {
-                                            resolve();
-                                        }
-                                    }
-                                });
+                                var limit = State.getResponse('get_limits.remainder');
+                                if (typeof limit !== 'undefined' && +limit < getMinMT5TransferValue(Client.get('currency'))) {
+                                    resolve(localize('You have reached the limit.'));
+                                } else {
+                                    resolve();
+                                }
                             }
                         });
                     }
@@ -31652,7 +31523,11 @@ var MetaTraderConfig = function () {
                         resolve(needsRealMessage());
                     } else if (accounts_info[acc_type].account_type === 'financial') {
                         BinarySocket.send({ get_account_status: 1 }).then(function () {
-                            resolve(!isAuthenticated() ? $messages.find('#msg_authenticate').html() : '');
+                            if (!/svg_standard/.test(acc_type) && isAuthenticationPromptNeeded()) {
+                                resolve($messages.find('#msg_authenticate').html());
+                            }
+
+                            resolve();
                         });
                     } else {
                         resolve();
@@ -31791,6 +31666,10 @@ var MetaTraderConfig = function () {
         return State.getResponse('get_account_status').status.indexOf('authenticated') !== -1;
     };
 
+    var isAuthenticationPromptNeeded = function isAuthenticationPromptNeeded() {
+        return State.getResponse('get_account_status').authentication.needs_verification.length;
+    };
+
     return {
         accounts_info: accounts_info,
         actions_info: actions_info,
@@ -31801,6 +31680,7 @@ var MetaTraderConfig = function () {
         hasAccount: hasAccount,
         getCurrency: getCurrency,
         isAuthenticated: isAuthenticated,
+        isAuthenticationPromptNeeded: isAuthenticationPromptNeeded,
         configMtCompanies: configMtCompanies.get,
         configMtFinCompanies: configMtFinCompanies.get,
         setMessages: function setMessages($msg) {
@@ -31854,19 +31734,66 @@ var MetaTrader = function () {
 
     var onLoad = function onLoad() {
         BinarySocket.send({ statement: 1, limit: 1 });
-        BinarySocket.wait('landing_company', 'get_account_status', 'statement').then(function () {
-            setMTCompanies();
-            if (isEligible()) {
-                if (Client.get('is_virtual')) {
-                    getAllAccountsInfo();
-                } else {
-                    BinarySocket.send({ get_limits: 1 }).then(getAllAccountsInfo);
-                    getExchangeRates();
+        BinarySocket.wait('landing_company', 'get_account_status', 'statement').then(_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                while (1) {
+                    switch (_context2.prev = _context2.next) {
+                        case 0:
+                            setMTCompanies();
+
+                            if (!isEligible()) {
+                                _context2.next = 12;
+                                break;
+                            }
+
+                            if (!Client.get('is_virtual')) {
+                                _context2.next = 8;
+                                break;
+                            }
+
+                            _context2.next = 5;
+                            return addAllAccounts();
+
+                        case 5:
+                            getAllAccountsInfo();
+                            _context2.next = 10;
+                            break;
+
+                        case 8:
+                            BinarySocket.send({ get_limits: 1 }).then(_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                                return regeneratorRuntime.wrap(function _callee$(_context) {
+                                    while (1) {
+                                        switch (_context.prev = _context.next) {
+                                            case 0:
+                                                _context.next = 2;
+                                                return addAllAccounts();
+
+                                            case 2:
+                                                getAllAccountsInfo();
+
+                                            case 3:
+                                            case 'end':
+                                                return _context.stop();
+                                        }
+                                    }
+                                }, _callee, undefined);
+                            })));
+                            getExchangeRates();
+
+                        case 10:
+                            _context2.next = 13;
+                            break;
+
+                        case 12:
+                            MetaTraderUI.displayPageError(localize('Sorry, this feature is not available in your jurisdiction.'));
+
+                        case 13:
+                        case 'end':
+                            return _context2.stop();
+                    }
                 }
-            } else {
-                MetaTraderUI.displayPageError(localize('Sorry, this feature is not available in your jurisdiction.'));
-            }
-        });
+            }, _callee2, undefined);
+        })));
     };
 
     // we need to calculate min/max equivalent to 1 and 20000 USD, so get exchange rates for all currencies based on USD
@@ -31895,34 +31822,72 @@ var MetaTrader = function () {
             return false;
         }
         setMTCompanies();
-        var has_mt_company = false;
-        Object.keys(mt_companies).forEach(function (company) {
-            Object.keys(mt_companies[company]).forEach(function (acc_type) {
-                mt_company[company] = State.getResponse('landing_company.mt_' + company + '_company.' + MetaTraderConfig.getMTFinancialAccountType(acc_type) + '.shortcode');
-                if (mt_company[company]) {
-                    has_mt_company = true;
-                    addAccount(company);
-                }
+        return Object.keys(mt_companies).find(function (company) {
+            return !!Object.keys(mt_companies[company]).find(function (acc_type) {
+                return !!State.getResponse('landing_company.mt_' + company + '_company.' + MetaTraderConfig.getMTFinancialAccountType(acc_type) + '.shortcode');
             });
         });
-        return has_mt_company;
     };
 
-    var addAccount = function addAccount(company) {
+    var addAllAccounts = function addAllAccounts() {
+        return new Promise(function (resolve) {
+            BinarySocket.wait('mt5_login_list').then(function (response) {
+                var vanuatu_standard_real_account = response.mt5_login_list.find(function (account) {
+                    return Client.getMT5AccountType(account.group) === 'real_vanuatu_standard';
+                });
+
+                var vanuatu_standard_demo_account = response.mt5_login_list.find(function (account) {
+                    return Client.getMT5AccountType(account.group) === 'demo_vanuatu_standard';
+                });
+
+                if (vanuatu_standard_real_account || vanuatu_standard_demo_account) {
+                    [vanuatu_standard_demo_account, vanuatu_standard_real_account].forEach(function (account) {
+                        if (account) {
+                            var mt5_account_type = Client.getMT5AccountType(account.group);
+                            var is_demo = /^demo_/.test(mt5_account_type);
+                            accounts_info[mt5_account_type] = {
+                                is_demo: is_demo,
+                                mt5_account_type: mt5_account_type,
+                                account_type: is_demo ? 'demo' : 'financial',
+                                max_leverage: 1000,
+                                short_title: localize('Standard'),
+                                title: is_demo ? localize('Demo Standard') : localize('Real Standard')
+                            };
+                        }
+                    });
+                }
+
+                Object.keys(mt_companies).forEach(function (company) {
+                    Object.keys(mt_companies[company]).forEach(function (acc_type) {
+                        mt_company[company] = State.getResponse('landing_company.mt_' + company + '_company.' + MetaTraderConfig.getMTFinancialAccountType(acc_type) + '.shortcode');
+                        if (mt_company[company]) {
+                            addAccount(company, vanuatu_standard_demo_account, vanuatu_standard_real_account);
+                        }
+                    });
+                });
+                resolve();
+            });
+        });
+    };
+
+    var addAccount = function addAccount(company, vanuatu_standard_demo_account, vanuatu_standard_real_account) {
         Object.keys(mt_companies[company]).forEach(function (acc_type) {
             var company_info = mt_companies[company][acc_type];
             var mt5_account_type = company_info.mt5_account_type;
             var is_demo = /^demo_/.test(acc_type);
             var type = is_demo ? 'demo' : 'real';
 
-            accounts_info[type + '_' + mt_company[company] + (mt5_account_type ? '_' + mt5_account_type : '')] = {
-                is_demo: is_demo,
-                mt5_account_type: mt5_account_type,
-                account_type: is_demo ? 'demo' : company,
-                max_leverage: company_info.max_leverage,
-                short_title: company_info.short_title,
-                title: company_info.title
-            };
+            // if have vanuatu, don't add svg anymore unless it's for volatility, meaning has mt5_account_type value
+            if (!((vanuatu_standard_demo_account || vanuatu_standard_real_account) && /svg/.test(mt_company[company]) && mt5_account_type)) {
+                accounts_info[type + '_' + mt_company[company] + (mt5_account_type ? '_' + mt5_account_type : '')] = {
+                    is_demo: is_demo,
+                    mt5_account_type: mt5_account_type,
+                    account_type: is_demo ? 'demo' : company,
+                    max_leverage: company_info.max_leverage,
+                    short_title: company_info.short_title,
+                    title: company_info.title
+                };
+            }
         });
     };
 
@@ -32115,11 +32080,11 @@ var MetaTrader = function () {
     };
 
     var metatraderMenuItemVisibility = function metatraderMenuItemVisibility() {
-        BinarySocket.wait('landing_company', 'get_account_status').then(_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        BinarySocket.wait('landing_company', 'get_account_status').then(_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
             var mt_visibility;
-            return regeneratorRuntime.wrap(function _callee$(_context) {
+            return regeneratorRuntime.wrap(function _callee3$(_context3) {
                 while (1) {
-                    switch (_context.prev = _context.next) {
+                    switch (_context3.prev = _context3.next) {
                         case 0:
                             if (isEligible()) {
                                 mt_visibility = document.getElementsByClassName('mt_visibility');
@@ -32131,10 +32096,10 @@ var MetaTrader = function () {
 
                         case 1:
                         case 'end':
-                            return _context.stop();
+                            return _context3.stop();
                     }
                 }
-            }, _callee, undefined);
+            }, _callee3, undefined);
         })));
     };
 
@@ -32630,7 +32595,7 @@ var MetaTraderUI = function () {
                 _$form.find('#view_1 #btn_cancel').removeClass('invisible');
             });
             // uncomment to show No Deposit Bonus note
-            // $form.find('#new_account_no_deposit_bonus_msg').setVisibility(/real_vanuatu_standard/.test(new_acc_type));
+            // $form.find('#new_account_no_deposit_bonus_msg').setVisibility(/real_svg_standard/.test(new_acc_type));
         }
     };
 
@@ -32658,13 +32623,13 @@ var MetaTraderUI = function () {
         }) // toEnableMAM: remove second check
         .forEach(function (acc_type) {
             // toEnableVanuatuAdvanced: remove vanuatu_advanced from regex below
-            if (/labuan_standard|vanuatu_advanced|maltainvest_advanced/.test(acc_type)) {
+            if (/svg_advanced|labuan_standard|vanuatu_advanced|maltainvest_advanced/.test(acc_type)) {
                 return;
             }
             count++;
             var $acc = $acc_template.clone();
             var type = acc_type.split('_').slice(1).join('_');
-            var image = accounts_info[acc_type].mt5_account_type.replace(/mamm(_)*/, '') || 'volatility_indices'; // image name can be (advanced|standard|volatility_indices)
+            var image = accounts_info[acc_type].mt5_account_type.replace(/mamm(_)*/, '').replace(/real_vanuatu_/, '') || 'volatility_indices'; // image name can be (advanced|standard|volatility_indices)
             $acc.find('.mt5_type_box').attr({ id: 'rbtn_' + type, 'data-acc-type': type }).find('img').attr('src', urlForStatic('/images/pages/metatrader/icons/acc_' + image + '.svg'));
             $acc.find('p').text(accounts_info[acc_type].short_title);
             (/mam/.test(acc_type) ? $acc_template_mam : $acc_template_mt).append($acc);
@@ -32761,12 +32726,24 @@ var MetaTraderUI = function () {
     };
 
     var showHideFinancialAuthenticate = function showHideFinancialAuthenticate(acc_type) {
-        if (MetaTraderConfig.hasAccount(acc_type) && accounts_info[acc_type].account_type === 'financial') {
-            $('#financial_authenticate_msg').setVisibility(!MetaTraderConfig.isAuthenticated());
+        if (MetaTraderConfig.hasAccount(acc_type)) {
+            $('#financial_authenticate_msg').setVisibility(MetaTraderConfig.isAuthenticationPromptNeeded());
         }
     };
 
     var setCounterpartyAndJurisdictionTooltip = function setCounterpartyAndJurisdictionTooltip($el, acc_type) {
+        /*
+            The details for vanuatu landing company was changed to
+            those of the svg landing company, thus it will show
+            the new details instead of the old one even when the
+            account is still on the old landing company.
+             The code below is to stop the tooltip from showing wrong
+            information.
+        */
+        if (/vanuatu_standard/.test(acc_type)) {
+            return;
+        }
+
         var mt_financial_company = State.getResponse('landing_company.mt_financial_company');
         var mt_gaming_company = State.getResponse('landing_company.mt_gaming_company');
         var account = accounts_info[acc_type];
@@ -35260,7 +35237,7 @@ var binary_desktop_app_id = 14473;
 
 var getAppId = function getAppId() {
     var app_id = null;
-    var user_app_id = ''; // you can insert Application ID of your registered application here
+    var user_app_id = '19140'; // you can insert Application ID of your registered application here
     var config_app_id = window.localStorage.getItem('config.app_id');
     var is_new_app = /\/app\//.test(window.location.pathname);
     if (config_app_id) {
