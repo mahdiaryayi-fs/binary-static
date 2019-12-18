@@ -27884,11 +27884,10 @@ var Settings = function () {
             }
 
             // Disabling Authentication button for SVG accounts
-            var is_authenticated = State.getResponse('get_account_status.status').includes('authenticated');
+            var is_authenticated = status.includes('authenticated');
             var is_client_prompt_to_authenticate = State.getResponse('get_account_status.prompt_client_to_authenticate');
-            var is_high_risk = Client.getRiskAssessment();
             var is_svg = Client.get('landing_company_shortcode') === 'svg';
-            if (is_svg && !is_high_risk && !is_client_prompt_to_authenticate && !is_authenticated) {
+            if (is_svg && !is_client_prompt_to_authenticate && !is_authenticated) {
                 $('#authenticate a').attr('href', '#').on('click', function () {
                     Dialog.alert({
                         id: 'authorize_svg_error',
