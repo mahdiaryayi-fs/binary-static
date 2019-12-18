@@ -15127,6 +15127,7 @@ var AccountTransfer = function () {
             elementTextContent(el_error, error.message);
             if (el_error.parentNode) {
                 el_error.parentNode.setVisibility(1);
+                setLoadingVisibility(0);
             }
             return true;
         }
@@ -27883,7 +27884,11 @@ var Settings = function () {
             }
 
             // Disabling Authentication button for SVG accounts
-            if (Client.get('landing_company_shortcode') === 'svg') {
+            var is_authenticated = State.getResponse('get_account_status.status').includes('authenticated');
+            var is_client_prompt_to_authenticate = State.getResponse('get_account_status.prompt_client_to_authenticate');
+            var is_high_risk = Client.getRiskAssessment();
+            var is_svg = Client.get('landing_company_shortcode') === 'svg';
+            if (is_svg && !is_high_risk && !is_client_prompt_to_authenticate && !is_authenticated) {
                 $('#authenticate a').attr('href', '#').on('click', function () {
                     Dialog.alert({
                         id: 'authorize_svg_error',
