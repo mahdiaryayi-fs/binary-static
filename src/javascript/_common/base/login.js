@@ -12,7 +12,7 @@ const getAppId            = require('../../config').getAppId;
 const Login = (() => {
     const redirectToLogin = () => {
         if (!Client.isLoggedIn() && !isLoginPages() && isStorageSupported(sessionStorage)) {
-            sessionStorage.setItem('redirect_url', window.location.href);
+            sessionStorage.setItem('redirect_url', window.location.origin + window.location.pathname);
             window.location.href = loginUrl();
         }
     };
