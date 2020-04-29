@@ -8,11 +8,15 @@ const urlForCurrentDomain = require('../url').urlForCurrentDomain;
 const isLoginPages        = require('../utility').isLoginPages;
 const TrafficSource       = require('../../app/common/traffic_source');
 const getAppId            = require('../../config').getAppId;
+const Url                 = require('../../../javascript/_common/url');
 
 const Login = (() => {
     const redirectToLogin = () => {
         if (!Client.isLoggedIn() && !isLoginPages() && isStorageSupported(sessionStorage)) {
-            sessionStorage.setItem('redirect_url', window.location.origin + window.location.pathname);
+            const params = Url.paramsHash();
+            delete params.market;
+            delete params.underlying;
+            sessionStorage.setItem('redirect_url', Url.urlFor(window.location.pathname, Url.paramsHashToString(params)));
             window.location.href = loginUrl();
         }
     };
