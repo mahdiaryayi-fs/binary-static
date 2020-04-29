@@ -63,6 +63,7 @@ const Header = (() => {
 
     const loginOnClick = (e) => {
         e.preventDefault();
+        window.sessionStorage.clear();
         Login.redirectToLogin();
     };
 
