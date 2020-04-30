@@ -16,7 +16,7 @@ const Login = (() => {
             const params = Url.paramsHash();
             delete params.market;
             delete params.underlying;
-            sessionStorage.setItem('redirect_url', Url.urlFor(window.location.pathname, Url.paramsHashToString(params)));
+            sessionStorage.setItem('redirect_url', Url.urlFor(Url.getSection(), Url.paramsHashToString(params)));
             window.location.href = loginUrl();
         }
     };
