@@ -19,6 +19,7 @@ const applyToAllElements       = require('../../_common/utility').applyToAllElem
 const createElement            = require('../../_common/utility').createElement;
 const findParent               = require('../../_common/utility').findParent;
 const template                 = require('../../_common/utility').template;
+const Defaults                 = require('../../app/pages/trade/defaults');
 
 const Header = (() => {
     const onLoad = () => {
@@ -63,11 +64,12 @@ const Header = (() => {
 
     const loginOnClick = (e) => {
         e.preventDefault();
-        window.sessionStorage.clear();
+        Defaults.remove('market', 'underlying');
         Login.redirectToLogin();
     };
 
     const logoutOnClick = () => {
+        Defaults.remove('market', 'underlying');
         Client.sendLogoutRequest();
     };
 
