@@ -8,7 +8,9 @@ const urlForCurrentDomain = require('../url').urlForCurrentDomain;
 const isLoginPages        = require('../utility').isLoginPages;
 const TrafficSource       = require('../../app/common/traffic_source');
 const getAppId            = require('../../config').getAppId;
-const Url                 = require('../../../javascript/_common/url');
+//const Url                 = require('../../../javascript/_common/url');
+const Url                 = require('../url').Url
+//const Url                 = Url.urlForCurrentDomain
 
 const Login = (() => {
     const redirectToLogin = () => {

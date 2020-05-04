@@ -61,15 +61,19 @@ const Header = (() => {
             BinaryPjax.load(Url.urlFor(''));
         }
     };
+//to clear trade parameters by removing market/underlying from url
+    const clearTradeParams = ()=> {
+        Defaults.remove('market', 'underlying');
+    }
 
     const loginOnClick = (e) => {
         e.preventDefault();
-        Defaults.remove('market', 'underlying');
+        clearTradeParams();
         Login.redirectToLogin();
     };
 
     const logoutOnClick = () => {
-        Defaults.remove('market', 'underlying');
+        clearTradeParams();
         Client.sendLogoutRequest();
     };
 
