@@ -35653,7 +35653,7 @@ var MetaTraderUI = function () {
 
         // disable next button and Synthetic option if all servers are used or unavailable
         var num_servers = populateTradingServers('real_gaming_financial');
-        if (num_servers.supported === num_servers.used + num_servers.disabled) {
+        if (/real/.test(selected_acc_type) && num_servers.supported === num_servers.used + num_servers.disabled) {
             disableButtonLink('.btn-next');
             _$form.find('.step-2 #rbtn_gaming_financial').addClass('existed disabled');
         }
