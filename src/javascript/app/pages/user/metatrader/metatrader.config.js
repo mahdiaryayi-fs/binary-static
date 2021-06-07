@@ -584,10 +584,10 @@ const MetaTraderConfig = (() => {
         const is_real = acc_type.startsWith('real');
         const is_gaming = getAccountsInfo(acc_type).market_type === 'gaming' || getAccountsInfo(acc_type).market_type === 'synthetic';
         const is_clean_type = acc_type.endsWith('financial') || acc_type.endsWith('stp');
-        const already_created_financial =   is_real &&
-                                            !is_gaming &&
-                                            Object.keys(accounts_info).some(item => item !== acc_type && item.startsWith(acc_type));
-        return !(is_real && is_clean_type && already_created_financial);
+        const already_created_financial = Object
+                                            .keys(accounts_info)
+                                            .some(item => item !== acc_type && item.startsWith(acc_type));
+        return !(is_real && is_clean_type && !is_gaming && already_created_financial);
     };
 
     const hasMultipleTradeServers = (acc_type, accounts) => {
