@@ -101,7 +101,8 @@ const Validation = (() => {
                     const event = events_map[field.type];
 
                     if (event) {
-                        field.$.unbind(event).on(event, () => {
+                        field.$.unbind(event).on(event, e => {
+                            if (e.type === 'change' && e.target.type === 'text') return
                             checkField(field);
                             if (field.re_check_field) {
                                 checkField(forms[form_selector].fields.find(fld => (
