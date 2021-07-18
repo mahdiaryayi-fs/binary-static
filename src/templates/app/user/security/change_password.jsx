@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormRow, Fieldset } from '../../../_common/components/forms.jsx';
+import { Fieldset } from '../../../_common/components/forms.jsx';
 import Loading from '../../../_common/components/loading.jsx';
 
 const AppsList = ({ platform }) => {
