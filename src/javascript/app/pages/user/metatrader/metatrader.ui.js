@@ -36,6 +36,8 @@ const MetaTraderUI = (() => {
     const mt5_url         = 'https://trade.mql5.com/trade';
     const getAccountsInfo = MetaTraderConfig.getAccountsInfo;
 
+    let is_trading_password_confirmed = false;
+
     let disabled_signup_types = {
         'real': false,
         'demo': false,
@@ -230,6 +232,20 @@ const MetaTraderUI = (() => {
         button_link_el.addClass('button-disabled');
         button_link_el.children('span').addClass('disabled');
     };
+
+    const getTradingPasswordConfirmVisibility = () => {
+        return is_trading_password_confirmed;
+    }
+
+    const setTradingPasswordConfirmVisibility = (visibility = 0) => {
+        $form.find('#trading_password_new_user_confirm').setVisibility(visibility);
+        $form.find('#trading_password_change_notice').setVisibility(visibility);
+        $form.find('#new_user_btn_submit_new_account_confirm').setVisibility(visibility);
+        $form.find('#trading_password_new_user').setVisibility((!shouldSetTradingPassword() || visibility) ? 0 : 1);
+        $form.find('#new_user_btn_submit_new_account').setVisibility(visibility ? 0 : 1);
+        $form.find('#trading_password_input').setVisibility(visibility ? 0 : 1);
+        is_trading_password_confirmed = !!visibility;
+    }
 
     const updateListItem = (acc_type) => {
         const $acc_item = $list.find(`[value="${acc_type}"]`);
@@ -642,7 +658,6 @@ const MetaTraderUI = (() => {
             $form.find('#view_3').find('#trading_password_new_user').setVisibility(1);
             if (has_mt5_account) {
                 $form.find('#trading_password_input').setVisibility(0);
-                $form.find('#has_mt5_new_user_btn_submit_new_account').setVisibility(1);
             } else {
                 $form.find('#new_user_btn_submit_new_account').setVisibility(1);
             }
@@ -707,6 +722,7 @@ const MetaTraderUI = (() => {
         // set active tab
         if (is_new_account) {
             $container.find(`[class~=act_${action}]`).addClass('selected');
+            setTradingPasswordConfirmVisibility(false);
         } else {
             $detail.setVisibility(1);
             $target.addClass('selected');
@@ -772,7 +788,7 @@ const MetaTraderUI = (() => {
                 $(e.target).not(':input[disabled]').attr('checked', 'checked');
             }
 
-            const new_user_submit_button = $form.find(mt5_login_list.length > 0 ? '#has_mt5_new_user_btn_submit_new_account' : '#new_user_btn_submit_new_account');
+            const new_user_submit_button = $form.find('#new_user_btn_submit_new_account');
             const existing_user_submit_button = $form.find('#existing_user_btn_submit_new_account');
 
             // Disable/enable submit button based on whether any of the checkboxes is checked.
@@ -975,8 +991,8 @@ const MetaTraderUI = (() => {
         let button_selector = 'button';
         if (action === 'new_account') {
             if (shouldSetTradingPassword()) {
-                if (mt5_login_list.length > 0) {
-                    button_selector = '#has_mt5_new_user_btn_submit_new_account';
+                if (getTradingPasswordConfirmVisibility()) {
+                    button_selector = '#new_user_btn_submit_new_account_confirm';
                 } else {
                     button_selector = '#new_user_btn_submit_new_account';
                 }
@@ -1007,12 +1023,12 @@ const MetaTraderUI = (() => {
             // after submit is done, reset token value
             resetManagePasswordTab(action, response);
         }
-        if (/new_account/.test(action)) {
+        if (/new_account/.test(action) && !getTradingPasswordConfirmVisibility()) {
             resetNewAccountForm(response);
         }
     };
 
-    const resetNewAccountForm = (response) => {
+    const resetNewAccountForm = (response = {}) => {
         const should_reset_view = ['#view_3-buttons_reset_password', '#trading_password_reset_required'];
         const normal_view = ['#trading_password_existing_user', '#view_3-buttons_existing_user', '#trading_password_input'];
         const $hint = $('#trading_password_existing_user_validation_error');
@@ -1181,6 +1197,8 @@ const MetaTraderUI = (() => {
         enableButton,
         refreshAction,
         setTopupLoading,
+        getTradingPasswordConfirmVisibility,
+        setTradingPasswordConfirmVisibility,
         showNewAccountConfirmationPopup,
 
         $form                  : () => $form,

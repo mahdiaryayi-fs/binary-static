@@ -296,6 +296,11 @@ const MetaTrader = (() => {
 
                 const req = makeRequestObject(acc_type, action);
                 if (action === 'new_account' && shouldSetTradingPassword()) {
+                    if (!MetaTraderUI.getTradingPasswordConfirmVisibility()) {
+                        MetaTraderUI.setTradingPasswordConfirmVisibility(1);
+                        MetaTraderUI.enableButton()
+                        return;
+                    }
                     await BinarySocket.send({
                         trading_platform_password_change: 1,
                         new_password: req.mainPassword,
