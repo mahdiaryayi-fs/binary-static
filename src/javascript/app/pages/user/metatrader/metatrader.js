@@ -254,6 +254,12 @@ const MetaTrader = (() => {
         return req;
     };
 
+    const shouldSetTradingPassword = () => {
+        const { status } = State.getResponse('get_account_status');
+
+        return Array.isArray(status) && status.includes('trading_password_required');
+    };
+
     const submit = (e) => {
         e.preventDefault();
 
@@ -274,7 +280,7 @@ const MetaTrader = (() => {
         if (Validation.validate(`#frm_${action}`)) {
             MetaTraderUI.disableButton(action);
             // further validations before submit (password_check)
-            MetaTraderUI.postValidate(acc_type, action).then((is_ok) => {
+            MetaTraderUI.postValidate(acc_type, action).then(async (is_ok) => {
                 if (!is_ok) {
                     MetaTraderUI.enableButton(action);
                     return;
@@ -289,6 +295,13 @@ const MetaTrader = (() => {
                 }
 
                 const req = makeRequestObject(acc_type, action);
+                if (action === 'new_account' && shouldSetTradingPassword()) {
+                    await BinarySocket.send({
+                        trading_platform_password_change: 1,
+                        new_password: req.mainPassword,
+                        platform: "mt5"
+                    })
+                }
                 BinarySocket.send(req).then(async (response) => {
                     if (response.error) {
                         MetaTraderUI.displayFormMessage(response.error.message, action);

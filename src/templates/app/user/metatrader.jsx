@@ -146,7 +146,7 @@ const Metatrader = () => (
                 <div className='mt-panel'>
                     <div className='acc-actions'>
                         <a href='javascript:;' className='act_new_account new-account center-text invisible'>
-                            <span>{it.L('Create MetaTrader 5 account')}</span>
+                            <span>{it.L('Create a MetaTrader 5 account')}</span>
                         </a>
                         <a href='javascript:;' className='act_cashier has-account center-text invisible'>
                             <span>{it.L('Manage funds')}</span>
@@ -292,7 +292,7 @@ const Metatrader = () => (
                             <div id='view_3' className='gr-row invisible'>
                                 <div className='container gr-12'>
                                     <p id='trading_password_new_user' className='center-text notice-msg invisible'>
-                                        {it.L('Set a trading password. Use this to log in and trade on MT5.')}
+                                        {it.L('Create a MT5 password. You can use this password for all your MT5 accounts.')}
                                     </p>
                                     <p id='trading_password_existing_user' className='notice-msg invisible'>
                                         {it.L('Please enter your trading password to create an account. If you\'ve forgotten your password, click [_1]Reset password[_2]', '<strong>', '</strong>')}
@@ -308,7 +308,7 @@ const Metatrader = () => (
                                             required
                                             type='password'
                                             id='trading_password'
-                                            label={it.L('Trading password')}
+                                            label={it.L('MT5 password')}
                                         />
                                     </div>
                                     <div id='view_3-buttons_existing_user' className='gr-padding-10 center-text'>
@@ -327,10 +327,10 @@ const Metatrader = () => (
                                             {it.L('Cancel')}
                                         </button>
                                         <a className='button button-primary invisible' id='has_mt5_new_user_btn_submit_new_account' href={it.url_for('user/security/change_passwordws')}>
-                                            <span>{it.L('Set trading password')}</span>
+                                            <span>{it.L('Create MT5 password')}</span>
                                         </a>
                                         <button className='button invisible' id='new_user_btn_submit_new_account' type='submit' action='new_account'>
-                                            {it.L('Set trading password')}
+                                            {it.L('Create MT5 password')}
                                         </button>
                                     </div>
                                     <div id='view_3-buttons_reset_password' className='gr-padding-10 center-text'>
