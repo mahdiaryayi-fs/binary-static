@@ -388,15 +388,34 @@ const Metatrader = () => (
                             <div className='mt-panel mt-container' >
                                 <div className='center-text hint gr-padding-20 gr-parent'>
                                     <div id='existing_client_message' className='invisible'>
-                                        <h3 className='secondary-color'>{it.L('You have a trading password for MT5')}</h3>
+                                        <h3 className='secondary-color'>{it.L('MT5 password')}</h3>
                                         <p className='notice-msg  center-text font-n'>
-                                            {it.L('Use trading password to sign in to any of your MT5 accounts when using MT5 apps on your mobile or other devices.')}
+                                            {it.L('Use this password to log in to your MT5 accounts on the desktop, web, and mobile apps.')}
                                         </p>
+                                        <div class="gr-row form-row center-text-m two-rows dummy-password">
+                                            <div class="gr-12">
+                                                <label for="dummy-password" class="dummy-password--label">
+                                                    {it.L('MT5 password')}
+                                                </label>
+                                            </div>
+                                            <div class="gr-12">
+                                                <div class="password--field-wrapper">
+                                                    <input
+                                                        type="password"
+                                                        class="dummy-password--input-field "
+                                                        id="dummy-password"
+                                                        value="dummy_password_1234567890"
+                                                        readOnly
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
                                         <a
                                             href={it.url_for('user/security/change_passwordws')}
-                                            className='button mt5-web-link'
+                                            className='button mt5-web-link full-width'
                                         >
-                                            <span>{it.L('Manage trading password')}</span>
+                                            <span>{it.L('Change password')}</span>
                                         </a>
                                     </div>
                                     <div id='new_client_message'  className='invisible'>

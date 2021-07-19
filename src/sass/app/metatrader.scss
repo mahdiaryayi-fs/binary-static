@@ -34,6 +34,16 @@
                 }
             }
         }
+        & .dummy-password {
+            margin-bottom: 17px;
+
+            &--input-field {
+                font-size: $FONT_SIZE_L;
+            }
+            &--label {
+                font-size: $FONT_SIZE_L;
+            }
+        }
         & #trading_password_input {
             padding-left: 7rem;
         }
