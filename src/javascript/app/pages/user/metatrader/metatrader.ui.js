@@ -145,6 +145,48 @@ const MetaTraderUI = (() => {
         return num_servers;
     };
 
+    const populatePasswordManager = () => {
+        const $mng_passwd  = $container.find('#frm_manage_password');
+        const $step_1 = $mng_passwd.find('.step-1');
+        const $step_2 = $mng_passwd.find('.step-2');
+        const $button = $mng_passwd.find('#password_change_button');
+        const $confirm_button = $mng_passwd.find('#password_change_confirm_buttons .btn_ok');
+        const $cancel_button = $mng_passwd.find('#password_change_confirm_buttons .btn_cancel');
+        const setStep = (step) => {
+            switch (step) {
+                case 1:
+                    $step_1.setVisibility(1);
+                    $step_2.setVisibility(0);
+                    break;
+                case 2:
+                    $step_1.setVisibility(0);
+                    $step_2.setVisibility(1);
+                    break;
+                default:
+                    $step_1.setVisibility(1);
+                    $step_2.setVisibility(0);
+            }
+        }
+        $button.off('click').on('click', () => {
+            setStep(2);
+        })
+        $confirm_button.off('click').on('click', () => {
+            BinarySocket.send({
+                verify_email: Client.get('email'),
+                type        : 'trading_platform_password_reset',
+                url_parameters: {
+                    platform: 'mt5'
+                }
+            }).then(() => {
+                showTradingPasswordResetAlertPopup();
+                setStep(1);
+            });
+        });
+        $cancel_button.off('click').on('click', () => {
+            setStep(1);
+        });
+    }
+
     const populateAccountList = () => {
         const $acc_name = $templates.find('> .acc-name');
         let acc_group_demo_set = false;
@@ -471,6 +513,7 @@ const MetaTraderUI = (() => {
                 .setVisibility(1);
 
             if (action === 'manage_password') {
+                populatePasswordManager();
                 if (shouldSetTradingPassword()) {
                     $form.find('#new_client_message').setVisibility(1);
                 } else {
@@ -1177,6 +1220,16 @@ const MetaTraderUI = (() => {
                 submit(e);
             },
             onAbort,
+        });
+    };
+
+    const showTradingPasswordResetAlertPopup = () => {
+
+        Dialog.alert({
+            id               : 'password-change-email-popup',
+            localized_title  : localize('We’ve sent you an email'),
+            localized_message: localize('Please click on the link in the email to change your MT5 password.'),
+            ok_text          : localize('OK'),
         });
     };
 
