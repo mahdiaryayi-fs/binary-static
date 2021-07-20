@@ -399,10 +399,10 @@ const Metatrader = () => (
                                                 </label>
                                             </div>
                                             <div class="gr-12">
-                                                <div class="password--field-wrapper">
+                                                <div class="dummy-password--field-wrapper">
                                                     <input
                                                         type="password"
-                                                        class="dummy-password--input-field "
+                                                        class="dummy-password--input-field"
                                                         id="dummy-password"
                                                         value="dummy_password_1234567890"
                                                         readOnly

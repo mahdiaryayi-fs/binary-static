@@ -37,6 +37,10 @@
         & .dummy-password {
             margin-bottom: 17px;
 
+            &--field-wrapper {
+                position: relative;
+                max-width: auto;
+            }
             &--input-field {
                 font-size: $FONT_SIZE_L;
             }
