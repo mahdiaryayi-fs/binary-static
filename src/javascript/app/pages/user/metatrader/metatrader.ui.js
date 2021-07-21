@@ -172,10 +172,10 @@ const MetaTraderUI = (() => {
         });
         $confirm_button.off('click').on('click', () => {
             BinarySocket.send({
-                verify_email   : Client.get('email'),
-                type           : 'trading_platform_password_reset',
-                url_parameters : {
-                    platform   : 'mt5',
+                verify_email  : Client.get('email'),
+                type          : 'trading_platform_password_reset',
+                url_parameters: {
+                    platform  : 'mt5',
                 },
             }).then(() => {
                 showTradingPasswordResetAlertPopup();

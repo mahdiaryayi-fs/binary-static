@@ -302,9 +302,9 @@ const MetaTrader = (() => {
                         return;
                     }
                     await BinarySocket.send({
-                        trading_platform_password_change : 1,
-                        new_password : req.mainPassword,
-                        platform     : 'mt5',
+                        trading_platform_password_change: 1,
+                        new_password                    : req.mainPassword,
+                        platform                        : 'mt5',
                     });
                 }
                 BinarySocket.send(req).then(async (response) => {
