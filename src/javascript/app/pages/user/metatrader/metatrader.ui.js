@@ -166,17 +166,17 @@ const MetaTraderUI = (() => {
                     $step_1.setVisibility(1);
                     $step_2.setVisibility(0);
             }
-        }
+        };
         $button.off('click').on('click', () => {
             setStep(2);
-        })
+        });
         $confirm_button.off('click').on('click', () => {
             BinarySocket.send({
-                verify_email: Client.get('email'),
-                type        : 'trading_platform_password_reset',
-                url_parameters: {
-                    platform: 'mt5'
-                }
+                verify_email   : Client.get('email'),
+                type           : 'trading_platform_password_reset',
+                url_parameters : {
+                    platform   : 'mt5',
+                },
             }).then(() => {
                 showTradingPasswordResetAlertPopup();
                 setStep(1);
@@ -185,7 +185,7 @@ const MetaTraderUI = (() => {
         $cancel_button.off('click').on('click', () => {
             setStep(1);
         });
-    }
+    };
 
     const populateAccountList = () => {
         const $acc_name = $templates.find('> .acc-name');
@@ -275,9 +275,7 @@ const MetaTraderUI = (() => {
         button_link_el.children('span').addClass('disabled');
     };
 
-    const getTradingPasswordConfirmVisibility = () => {
-        return is_trading_password_confirmed;
-    }
+    const getTradingPasswordConfirmVisibility = () => is_trading_password_confirmed;
 
     const setTradingPasswordConfirmVisibility = (visibility = 0) => {
         $form.find('#trading_password_new_user_confirm').setVisibility(visibility);
@@ -287,7 +285,7 @@ const MetaTraderUI = (() => {
         $form.find('#new_user_btn_submit_new_account').setVisibility(visibility ? 0 : 1);
         $form.find('#trading_password_input').setVisibility(visibility ? 0 : 1);
         is_trading_password_confirmed = !!visibility;
-    }
+    };
 
     const updateListItem = (acc_type) => {
         const $acc_item = $list.find(`[value="${acc_type}"]`);
