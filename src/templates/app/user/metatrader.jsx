@@ -298,7 +298,7 @@ const Metatrader = () => (
                                         {it.L('Confirm to create your MT5 password')}
                                     </p>
                                     <p id='trading_password_existing_user' className='notice-msg invisible'>
-                                        {it.L('Please enter your trading password to create an account. If you\'ve forgotten your password, click [_1]Reset password[_2]', '<strong>', '</strong>')}
+                                        {it.L('Enter your MT5 password to add a demo MT5 Synthetic account.')}
                                     </p>
                                     <p id='trading_password_reset_required' className='notice-msg center-text invisible'>
                                         {it.L('To many attempts. Please try again in a few minutes')}
@@ -322,7 +322,7 @@ const Metatrader = () => (
                                             {it.L('Hint: You may have chosen a different trading password from your [_1] log in password.', it.website_name)}
                                         </p>
                                         <button type='button' id='btn_forgot_trading_password' className='button button-secondary btn-back'>
-                                            {it.L('Reset password')}
+                                            {it.L('Forgot password?')}
                                         </button>
                                         <button className='button'  id='existing_user_btn_submit_new_account' type='submit' action='new_account'>
                                             {it.L('Add account')}
@@ -332,9 +332,6 @@ const Metatrader = () => (
                                         <button className='button button-secondary btn-cancel' id='new_user_cancel_button'>
                                             {it.L('Cancel')}
                                         </button>
-                                        {/* <a className='button button-primary invisible' id='has_mt5_new_user_btn_submit_new_account' href={it.url_for('user/security/change_passwordws')}>
-                                            <span>{it.L('Create MT5 password')}</span>
-                                        </a> */}
                                         <button className='button invisible' id='new_user_btn_submit_new_account' type='submit' action='new_account'>
                                             {it.L('Create MT5 password')}
                                         </button>
