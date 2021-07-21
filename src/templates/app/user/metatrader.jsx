@@ -385,24 +385,24 @@ const Metatrader = () => (
                             <div className='mt-panel mt-container' >
                                 <div className='center-text hint gr-padding-20 gr-parent'>
                                     <div id='existing_client_message' className='invisible'>
-                                        <div className="step-1">
+                                        <div className='step-1'>
                                             <h3 className='password_change_title secondary-color'>{it.L('MT5 password')}</h3>
                                             <p className='notice-msg center-text font-n'>
                                                 {it.L('Use this password to log in to your MT5 accounts on the desktop, web, and mobile apps.')}
                                             </p>
-                                            <div id="dummy_password" class="gr-row form-row center-text-m two-rows dummy-password">
-                                                <div class="gr-12">
-                                                    <label for="dummy-password" class="dummy-password--label">
+                                            <div id='dummy_password' className='gr-row form-row center-text-m two-rows dummy-password'>
+                                                <div class='gr-12'>
+                                                    <label htmlFor='dummy-password' className='dummy-password--label'>
                                                         {it.L('MT5 password')}
                                                     </label>
                                                 </div>
-                                                <div class="gr-12">
-                                                    <div class="dummy-password--field-wrapper">
+                                                <div className='gr-12'>
+                                                    <div className='dummy-password--field-wrapper'>
                                                         <input
-                                                            type="password"
-                                                            class="dummy-password--input-field"
-                                                            id="dummy_password_input"
-                                                            value="dummy_password_1234567890"
+                                                            type='password'
+                                                            className='dummy-password--input-field'
+                                                            id='dummy_password_input'
+                                                            value='dummy_password_1234567890'
                                                             readOnly
                                                             disabled
                                                         />
@@ -417,14 +417,14 @@ const Metatrader = () => (
                                                 <span>{it.L('Change password')}</span>
                                             </a>
                                         </div>
-                                        <div className="step-2 invisible">
+                                        <div className='step-2 invisible'>
                                             <h3 className='secondary-color password_change_title'>
                                                 {it.L('Confirm to change your MT5 password')}
                                             </h3>
                                             <p className='error-msg center-text password_change_warning'>
                                                 {it.L('This will change the password to all of your MT5 accounts.')}
                                             </p>
-                                            <div id="password_change_confirm_buttons">
+                                            <div id='password_change_confirm_buttons'>
                                                 <a className='button button-secondary btn_cancel' href='javascript:;'>
                                                     <span>{it.L('Cancel')}</span>
                                                 </a>
