@@ -175,7 +175,7 @@ const MetaTraderUI = (() => {
                 verify_email  : Client.get('email'),
                 type          : 'trading_platform_password_reset',
                 url_parameters: {
-                    platform  : 'mt5',
+                    platform: 'mt5',
                 },
             }).then(() => {
                 showTradingPasswordResetAlertPopup();
