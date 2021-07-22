@@ -679,7 +679,7 @@ const MetaTraderUI = (() => {
     const shouldSetTradingPassword = () => {
         const { status } = State.getResponse('get_account_status');
 
-        return Array.isArray(status) && status.includes('trading_password_required');
+        return Array.isArray(status) && status.includes('mt5_password_not_set');
     };
 
     const displayStep = (step) => {
@@ -1251,6 +1251,7 @@ const MetaTraderUI = (() => {
         getTradingPasswordConfirmVisibility,
         setTradingPasswordConfirmVisibility,
         showNewAccountConfirmationPopup,
+        shouldSetTradingPassword,
 
         $form                  : () => $form,
         getDisabledAccountTypes: () => disabled_signup_types,

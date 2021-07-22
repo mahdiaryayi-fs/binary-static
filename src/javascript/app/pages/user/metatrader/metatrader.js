@@ -254,12 +254,6 @@ const MetaTrader = (() => {
         return req;
     };
 
-    const shouldSetTradingPassword = () => {
-        const { status } = State.getResponse('get_account_status');
-
-        return Array.isArray(status) && status.includes('trading_password_required');
-    };
-
     const submit = (e) => {
         e.preventDefault();
 
@@ -295,7 +289,7 @@ const MetaTrader = (() => {
                 }
 
                 const req = makeRequestObject(acc_type, action);
-                if (action === 'new_account' && shouldSetTradingPassword()) {
+                if (action === 'new_account' && MetaTraderUI.shouldSetTradingPassword()) {
                     if (!MetaTraderUI.getTradingPasswordConfirmVisibility()) {
                         MetaTraderUI.setTradingPasswordConfirmVisibility(1);
                         MetaTraderUI.enableButton();
