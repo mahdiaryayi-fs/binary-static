@@ -58,8 +58,7 @@ const ChangePassword = (() => {
     const onSentEmail = (event_type, social_identifier) => {
         const req = {
             verify_email: Client.get('email'),
-            type        : event_type === 'trading_password' ? 'trading_platform_password_reset' : 'reset_password',
-            ...(event_type === 'trading_password' ? { url_parameters: { platform: 'mt5' } } : {}),
+            type        : event_type === 'trading_password' ? 'trading_platform_mt5_password_reset' : 'reset_password',
         };
         BinarySocket.send(req).then(() => {
             Dialog.alert({
