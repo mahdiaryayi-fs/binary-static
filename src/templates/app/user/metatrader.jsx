@@ -303,9 +303,6 @@ const Metatrader = () => (
                                     <p id='trading_password_reset_required' className='notice-msg center-text invisible'>
                                         {it.L('To many attempts. Please try again in a few minutes')}
                                     </p>
-                                    <p id='trading_password_change_notice' className='error-msg center-text invisible'>
-                                        {it.L('This will change the password to all of your MT5 accounts.')}
-                                    </p>
                                     <div id='trading_password_input' className='center-text'>
                                         <FormRow
                                             className='trading-password'

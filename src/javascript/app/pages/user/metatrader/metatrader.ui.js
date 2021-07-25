@@ -276,7 +276,6 @@ const MetaTraderUI = (() => {
 
     const setTradingPasswordConfirmVisibility = (visibility = 0) => {
         $form.find('#trading_password_new_user_confirm').setVisibility(visibility);
-        $form.find('#trading_password_change_notice').setVisibility(visibility);
         $form.find('#new_user_btn_submit_new_account_confirm').setVisibility(visibility);
         $form.find('#trading_password_new_user').setVisibility((!shouldSetTradingPassword() || visibility) ? 0 : 1);
         $form.find('#new_user_btn_submit_new_account').setVisibility(visibility ? 0 : 1);
