@@ -4,7 +4,7 @@ import { FormRow, Fieldset, SubmitButton } from '../../_common/components/forms.
 const TradingResetPassword = () => (
     <React.Fragment>
         <div className='static_full'>
-            <h1>{it.L('Trading password reset')}</h1>
+            <h1>{it.L('Change MT5 password')}</h1>
             <p className='notice-msg invisible' id='msg_trading_reset_password' />
 
             <div className='invisible' id='form_error'>
