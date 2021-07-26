@@ -601,3 +601,10 @@
 tbody#instruments > tr > td {
     width: 33%;
 }
+
+#password-change-email-popup {
+    #dialog_content {
+        max-width: 480px;
+        padding-top: 32px;
+    }
+}
