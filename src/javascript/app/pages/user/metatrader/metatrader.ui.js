@@ -145,6 +145,11 @@ const MetaTraderUI = (() => {
         return num_servers;
     };
 
+    const resetMT5TradingPassword = () => BinarySocket.send({
+        verify_email: Client.get('email'),
+        type        : 'trading_platform_mt5_password_reset',
+    });
+
     const populatePasswordManager = () => {
         const $mng_passwd  = $container.find('#frm_manage_password');
         const $step_1 = $mng_passwd.find('.step-1');
@@ -171,10 +176,7 @@ const MetaTraderUI = (() => {
             setStep(2);
         });
         $confirm_button.off('click').on('click', () => {
-            BinarySocket.send({
-                verify_email: Client.get('email'),
-                type        : 'trading_platform_mt5_password_reset',
-            }).then(() => {
+            resetMT5TradingPassword().then(() => {
                 showTradingPasswordResetAlertPopup();
                 setStep(1);
             });
@@ -740,12 +742,14 @@ const MetaTraderUI = (() => {
             }
             $('<p />', { id: 'msg_form', class: 'center-text gr-padding-10 error-msg no-margin invisible' }).prependTo($view_3_button_container);
             $view_3_button_container.setVisibility(1);
-            $view_3_button_container.find('#btn_forgot_trading_password').on('click', () => displayStep(4));
-        } else if (step === 4) {
-            BinarySocket.send({
-                verify_email: Client.get('email'),
-                type        : 'trading_platform_mt5_password_reset',
+            $view_3_button_container.find('#btn_forgot_trading_password').on('click', () => {
+                resetMT5TradingPassword().then(() => {
+                    showTradingPasswordResetAlertPopup();
+                    loadAction('manage_password');
+                });
             });
+        } else if (step === 4) {
+            resetMT5TradingPassword();
         } else if (step !== 1) {
             displayStep(1);
         }
