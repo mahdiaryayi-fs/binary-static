@@ -31,7 +31,7 @@ const ChangePassword = () => (
         <div id='change_password_container' className='change_password invisible'>
             <form className='form gr-padding-10' id='frm_change_password'>
                 <Fieldset legend={it.L('Binary Password')}>
-                    <p className='hint'>{it.L('Use this to log in to Binary.com, SmartTrader, Binary Bot, and Webtrader.')}</p>
+                    <p className='hint'>{it.L('Use the Binary password to log in to Binary.com, SmartTrader, Binary Bot, and WebTrader.')}</p>
                     <div className='gr-gutter gr-padding-20'>
                         <div className='gr-row clear' id='binary_password_content_wrapper'>
                             <div id='binary_password_container' className='row-inner gr-7 gr-12-p gr-12-m align-self-center invisible'>
