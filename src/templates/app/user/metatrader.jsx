@@ -297,9 +297,7 @@ const Metatrader = () => (
                                     <p id='trading_password_new_user_confirm' className='center-text notice-msg invisible'>
                                         {it.L('Confirm to create your MT5 password')}
                                     </p>
-                                    <p id='trading_password_existing_user' className='notice-msg invisible'>
-                                        {it.L('Enter your MT5 password to add a demo MT5 Synthetic account.')}
-                                    </p>
+                                    <p id='trading_password_existing_user' className='center-text notice-msg invisible' />
                                     <p id='trading_password_reset_required' className='notice-msg center-text invisible'>
                                         {it.L('To many attempts. Please try again in a few minutes')}
                                     </p>

@@ -699,7 +699,15 @@ const MetaTraderUI = (() => {
                 $form.find('#new_user_btn_submit_new_account').setVisibility(1);
             }
         } else {
-            $form.find('#view_3').find('#trading_password_existing_user').setVisibility(1);
+            $form.find('#view_3').find('#trading_password_existing_user')
+                .html(localize(
+                    'Enter your MT5 password to add a [_1] MT5 [_2] account.',
+                    [
+                        is_demo ? localize('demo') : localize('real'),
+                        is_synthetic ? localize('Synthetic') : localize('Financial'),
+                    ]
+                ))
+                .setVisibility(1);
         }
 
         $form.find(`.${is_demo ? 'real' : 'demo'}-only`).setVisibility(0);
