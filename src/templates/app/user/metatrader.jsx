@@ -454,7 +454,7 @@ const Metatrader = () => (
                                     <div className='center-text hint gr-padding-20 gr-parent'>
                                         <h3 className='secondary-color'>{it.L('Change investor password')}</h3>
                                     </div>
-                                    <p className='no-margin'>{it.L('Use this password to grant viewing access to another user. While they may view your trading account, they will not be able to trade or take any other actions. If this is the first time you try to create a password, or you have forgotten your password, please reset it.')}</p>
+                                    <p className='no-margin'>{it.L('Use this password to grant viewing access to another user. While they may view your trading account, they will not be able to trade or take any other actions. Click Create or reset password, if this is your first investor password or if you\'ve forgotten your password.')}</p>
                                     <FormRow autoComplete='current-password' is_two_rows type='password' id='txt_old_password' label={it.L('Current investor password')} />
                                     <FormRow autoComplete='new-password' is_two_rows has_password_meter type='password' id='txt_new_password' label={it.L('New investor password')} />
                                     <p className='no-margin font-s'>
