@@ -108,6 +108,10 @@ const Metatrader = () => (
                                     <div data='balance' />
                                 </div>
                                 <div className='gr-row gr-padding-10 gr-parent'>
+                                    <div className='gr-3'>{it.L('Name:')}</div>
+                                    <div data='name' />
+                                </div>
+                                <div className='gr-row gr-padding-10 gr-parent'>
                                     <div className='gr-3'>{it.L('Broker:')}</div>
                                     <div data='broker' />
                                 </div>
