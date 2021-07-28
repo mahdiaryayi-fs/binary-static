@@ -290,9 +290,11 @@ const MetaTrader = (() => {
 
                 const req = makeRequestObject(acc_type, action);
                 if (action === 'new_account' && MetaTraderUI.shouldSetTradingPassword()) {
-                    if (!MetaTraderUI.getTradingPasswordConfirmVisibility()) {
+                    const resp = await BinarySocket.send({ mt5_login_list: 1 });
+                    const has_mt5_account = resp.mt5_login_list.length > 0;
+                    if (has_mt5_account && !MetaTraderUI.getTradingPasswordConfirmVisibility()) {
                         MetaTraderUI.setTradingPasswordConfirmVisibility(1);
-                        MetaTraderUI.enableButton();
+                        MetaTraderUI.enableButton(action);
                         return;
                     }
                     await BinarySocket.send({
