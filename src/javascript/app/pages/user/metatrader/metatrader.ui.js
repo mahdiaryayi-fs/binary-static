@@ -277,7 +277,6 @@ const MetaTraderUI = (() => {
     const getTradingPasswordConfirmVisibility = () => is_trading_password_confirmed;
 
     const setTradingPasswordConfirmVisibility = (visibility = 0) => {
-        const has_mt5_account = mt5_login_list.length > 0;
         $form.find('#new_user_cancel_button').setVisibility(visibility ? 0 : 1);
         $form.find('#new_user_back_button').setVisibility(visibility);
         $form.find('#trading_password_new_user_confirm').setVisibility(visibility);
@@ -864,7 +863,7 @@ const MetaTraderUI = (() => {
         $form.find('#view_3 .btn-back-password').click(() => {
             setTradingPasswordConfirmVisibility(0);
             enableButton('new_account');
-        })
+        });
         $form.find('#view_2 .btn-back').click(() => { displayStep(1); });
 
         // Account type selection
