@@ -426,7 +426,6 @@ const MetaTraderUI = (() => {
                 const info    = getAccountsInfo(acc_type).info[key];
                 const mapping = {
                     balance      : () => (isNaN(info) ? '' : Currency.formatMoney(MetaTraderConfig.getCurrency(acc_type), +info)),
-                    name         : () => (`${info}`),
                     broker       : () => 'Deriv Limited',
                     display_login: () => (`${info} (${is_demo ? localize('Demo Account') : localize('Real-Money Account')})`),
                     leverage     : () => `1:${info}`,
