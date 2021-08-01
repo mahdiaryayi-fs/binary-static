@@ -49,9 +49,9 @@ const ChangePassword = (() => {
                 }
                 return localize('Check the email account associated with your Apple ID and click the link in the email to proceed.');
             case 'trading_password':
-                return localize('Please click on the link in the email to reset your MT5 password.');
+                return localize('Please click on the link in the email to change your MT5 password.');
             default:
-                return localize('Please click on the link in the email to reset your binary password.');
+                return localize('Please click on the link in the email to change your binary password.');
         }
     };
 
