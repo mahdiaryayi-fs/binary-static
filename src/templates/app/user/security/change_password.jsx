@@ -39,7 +39,7 @@ const ChangePassword = () => (
                                     <div className='gr-row gr-padding-10'>
                                         <a
                                             id='forgot_binary_pw_btn'
-                                            className='button gr-6 gr-12-p gr-12-m gr-gutter center-text-m'
+                                            className='button gr-12-p gr-gutter center-text-m'
                                             href='javascript:;'
                                         >
                                             <span>{it.L('Change password')}</span>
@@ -89,7 +89,7 @@ const ChangePassword = () => (
                                     <div className='gr-row gr-padding-10'>
                                         <a
                                             id='forgot_trading_pw_btn'
-                                            className='button gr-6 gr-12-p gr-12-m gr-gutter center-text-m'
+                                            className='button gr-12-p gr-gutter center-text-m'
                                             href='javascript:;'
                                         >
                                             <span>{it.L('Change password')}</span>
