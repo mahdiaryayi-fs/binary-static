@@ -545,11 +545,13 @@
 
 @media (max-width: 480px) {
     #view_3-buttons_existing_user {
-        .button {
-            width: 220px;
-        }
         .button + .button {
             margin-left: 0 !important;
+        }
+    }
+    #view_3 {
+        .button {
+            width: 220px;
         }
     }
 }
