@@ -64,6 +64,10 @@
                 width: calc(100% - 20px);
                 padding: initial;
 
+                .form-row {
+                    width: 250px;
+                    margin: 0 auto;
+                }
                 & .password--meter.password--meter-bg {
                     top: 28px;
                 }
@@ -541,6 +545,9 @@
 
 @media (max-width: 480px) {
     #view_3-buttons_existing_user {
+        .button {
+            width: 220px;
+        }
         .button + .button {
             margin-left: 0 !important;
         }
