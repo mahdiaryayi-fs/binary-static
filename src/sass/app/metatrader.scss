@@ -92,6 +92,7 @@
         color: $COLOR_BLUE;
         background: $COLOR_LIGHT_GRAY;
         font-weight: bold;
+        text-align: center;
 
         &:before {
             content: '';
@@ -544,14 +545,13 @@
 }
 
 @media (max-width: 480px) {
-    #view_3-buttons_existing_user {
-        .button + .button {
-            margin-left: 0 !important;
-        }
-    }
     #view_3 {
         .button {
             width: 220px;
+            padding: 10px 20px;
+        }
+        .button + .button {
+            margin-left: 0 !important;
         }
     }
 }
