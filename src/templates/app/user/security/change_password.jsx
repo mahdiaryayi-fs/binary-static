@@ -31,7 +31,7 @@ const ChangePassword = () => (
         <div id='change_password_container' className='change_password invisible'>
             <form className='form gr-padding-10' id='frm_change_password'>
                 <Fieldset legend={it.L('Binary Password')}>
-                    <p className='hint'>{it.L('Use the Binary password to log in to Binary.com, SmartTrader, Binary Bot, and WebTrader.')}</p>
+                    <p className='hint'>{it.L('This password is for logging in to your Binary.com account.')}</p>
                     <div className='gr-gutter gr-padding-20'>
                         <div className='gr-row clear' id='binary_password_content_wrapper'>
                             <div id='binary_password_container' className='row-inner gr-7 gr-12-p gr-12-m align-self-center invisible'>
@@ -52,6 +52,7 @@ const ChangePassword = () => (
                                 </div>
                             </div>
                             <div id='social_signup_container' className='row-inner gr-7 gr-12-p gr-12-m align-self-center invisible'>
+                                <p id='linked_social_hint' className='hint' />
                                 <div id='social-identifier' className='social-identifier gr-padding-10 flex center-align flex-row'>
                                     <img id='ic_linked_social_identifier' />
                                     <span id='linked_social_identifier' />
@@ -80,7 +81,7 @@ const ChangePassword = () => (
             <form className='form gr-padding-10' id='frm_trading_password'>
                 <Fieldset legend={it.L('MT5 password')}>
                     <div className='gr-7 gr-12-p gr-12-m'>
-                        <p className='hint'>{it.L('Use the MT5 password to log in to your MT5 accounts on the desktop, web and mobile apps.')}</p>
+                        <p className='hint'>{it.L('This password is for logging in to your MT5 accounts on the desktop, web, and mobile apps.')}</p>
                     </div>
                     <div className='gr-gutter gr-padding-20'>
                         <div className='gr-row clear' id='trading_password_content_wrapper'>
