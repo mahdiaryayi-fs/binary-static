@@ -391,7 +391,8 @@ const Metatrader = () => (
                                             <p className='notice-msg center-text font-n'>
                                                 {it.L('Use this password to log in to your MT5 accounts on the desktop, web, and mobile apps.')}
                                             </p>
-                                            <div id='dummy_password' className='gr-row form-row center-text-m two-rows dummy-password'>
+                                            {/* TODO: temporary invisible. refactor this when design is updated */}
+                                            <div id='dummy_password' className='gr-row form-row center-text-m two-rows dummy-password invisible'>
                                                 <div className='gr-12'>
                                                     <label htmlFor='dummy-password' className='dummy-password--label'>
                                                         {it.L('MT5 password')}
