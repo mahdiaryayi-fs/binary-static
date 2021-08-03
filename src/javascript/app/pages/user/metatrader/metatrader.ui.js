@@ -24,7 +24,6 @@ const MetaTraderUI = (() => {
         $templates,
         $form,
         $main_msg,
-        mt5_login_list,
         validations,
         submit,
         topup_demo,
@@ -60,10 +59,6 @@ const MetaTraderUI = (() => {
         $templates   = $container.find('#templates').remove();
         $main_msg    = $container.find('#main_msg');
         $container.find('[class*="act_"]').on('click', populateForm);
-
-        BinarySocket.wait('mt5_login_list').then(() => {
-            mt5_login_list = State.getResponse('mt5_login_list');
-        });
 
         MetaTraderConfig.setMessages($templates.find('#messages'));
 
@@ -684,7 +679,6 @@ const MetaTraderUI = (() => {
         const is_demo = /demo/.test(new_account_type);
         const should_set_trading_password = shouldSetTradingPassword();
         const is_synthetic = /gaming/.test(new_account_type);
-        const has_mt5_account = mt5_login_list.length > 0;
 
         $form.find('#msg_form').remove();
         $form.find('#mv_new_account div[id^="view_"]').setVisibility(0);
