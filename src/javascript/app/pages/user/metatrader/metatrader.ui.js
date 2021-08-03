@@ -694,11 +694,6 @@ const MetaTraderUI = (() => {
         // Show proper notice msg based on api flag
         if (should_set_trading_password) {
             $form.find('#view_3').find('#trading_password_new_user').setVisibility(1);
-            if (has_mt5_account) {
-                $form.find('#trading_password_input').setVisibility(0);
-            } else {
-                $form.find('#new_user_btn_submit_new_account').setVisibility(1);
-            }
         } else {
             $form.find('#view_3').find('#trading_password_existing_user')
                 .html(localize(
@@ -770,7 +765,7 @@ const MetaTraderUI = (() => {
         // set active tab
         if (is_new_account) {
             $container.find(`[class~=act_${action}]`).addClass('selected');
-            setTradingPasswordConfirmVisibility(false);
+            setTradingPasswordConfirmVisibility(0);
         } else {
             $detail.setVisibility(1);
             $target.addClass('selected');
