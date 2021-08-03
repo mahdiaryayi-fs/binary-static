@@ -385,7 +385,7 @@ const Metatrader = () => (
                         <div className='gr-6 gr-12-m flex'>
                             <div className='mt-panel mt-container' >
                                 <div className='center-text hint gr-padding-20 gr-parent'>
-                                    <div id='existing_client_message' className='invisible'>
+                                    <div id='existing_client_message'>
                                         <div className='step-1'>
                                             <h3 className='password_change_title secondary-color'>{it.L('MT5 password')}</h3>
                                             <p className='notice-msg center-text font-n'>
@@ -435,18 +435,6 @@ const Metatrader = () => (
                                                 </a>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div id='new_client_message'  className='invisible'>
-                                        <h3 className='secondary-color'>{it.L('Trading password — a new, easy way to sign in to your MT5 accounts')}</h3>
-                                        <p className='notice-msg  center-text  font-n'>
-                                            {it.L('A trading password is used to sign in to any of your MT5 accounts when using MT5 apps on your mobile or other devices. ')}
-                                        </p>
-                                        <a
-                                            href={it.url_for('user/security/change_passwordws')}
-                                            className='button mt5-web-link'
-                                        >
-                                            <span>{it.L('Set trading password')}</span>
-                                        </a>
                                     </div>
                                 </div>
                             </div>
