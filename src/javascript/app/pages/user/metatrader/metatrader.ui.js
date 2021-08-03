@@ -362,6 +362,7 @@ const MetaTraderUI = (() => {
                 } else {
                     displayStep(3);
                 }
+                displayAccountDescription('real_gaming_financial');
 
                 $.scrollTo($container.find('.acc-actions'), 300, { offset: -10 });
             });
@@ -864,7 +865,11 @@ const MetaTraderUI = (() => {
             setTradingPasswordConfirmVisibility(0);
             enableButton('new_account');
         });
-        $form.find('#view_2 .btn-back').click(() => { displayStep(1); });
+        $form.find('#view_2 .btn-back').click(() => {
+            displayStep(1);
+            const $elem = $container.find('#rbtn_gaming_financial.selected');
+            displayAccountDescription($elem.length > 0 ? 'real_gaming_financial' : undefined);
+        });
 
         // Account type selection
         $form.find('.mt5_type_box').click(selectAccountTypeUI);
