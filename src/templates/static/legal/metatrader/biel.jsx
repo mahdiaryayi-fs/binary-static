@@ -9,6 +9,8 @@ const BIEL = () => (
             <li>{it.L('Rolling Spot Forex')}</li>
             <li>{it.L('CFDs on commodities')}</li>
             <li>{it.L('CFDs on indices')}</li>
+            <li>{it.L('Synthetic Indices')}</li>
+            <li>{it.L('Stocks and Stock Indices')}</li>
         </ol>
         <p>{it.L('The trading services described in this agreement are OTC. This means that one or more of the Underlying Instruments in which the client transacts with DIEL, though quoted on an exchange, are not traded on an exchange when transacted through the electronic trading platform as described in this agreement.')}</p>
         <p>{it.L('The client\'s trades will be carried out on an execution-only basis through our online platform.')}</p>
