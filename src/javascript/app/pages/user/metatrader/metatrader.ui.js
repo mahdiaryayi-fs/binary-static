@@ -146,6 +146,10 @@ const MetaTraderUI = (() => {
     });
 
     const populatePasswordManager = () => {
+        const STEPS = {
+            PASSWORD_INSERT : 1,
+            PASSWORD_CONFIRM: 2,
+        };
         const $mng_passwd  = $container.find('#frm_manage_password');
         const $step_1 = $mng_passwd.find('.step-1');
         const $step_2 = $mng_passwd.find('.step-2');
@@ -154,11 +158,11 @@ const MetaTraderUI = (() => {
         const $cancel_button = $mng_passwd.find('#password_change_confirm_buttons .btn_cancel');
         const setStep = (step) => {
             switch (step) {
-                case 1:
+                case STEPS.PASSWORD_INSERT:
                     $step_1.setVisibility(1);
                     $step_2.setVisibility(0);
                     break;
-                case 2:
+                case STEPS.PASSWORD_CONFIRM:
                     $step_1.setVisibility(0);
                     $step_2.setVisibility(1);
                     break;
@@ -168,16 +172,16 @@ const MetaTraderUI = (() => {
             }
         };
         $button.off('click').on('click', () => {
-            setStep(2);
+            setStep(STEPS.PASSWORD_CONFIRM);
         });
         $confirm_button.off('click').on('click', () => {
             resetMT5TradingPassword().then(() => {
                 showTradingPasswordResetAlertPopup();
-                setStep(1);
+                setStep(STEPS.PASSWORD_INSERT);
             });
         });
         $cancel_button.off('click').on('click', () => {
-            setStep(1);
+            setStep(STEPS.PASSWORD_INSERT);
         });
     };
 
