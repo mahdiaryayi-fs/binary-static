@@ -23,12 +23,11 @@ const OrderExecution = () => (
         <h2 data-anchor='classes-of-instruments'>{it.L('Classes of instruments')}</h2>
         <p>{it.L('The Company offers binary options through its online interactive platform.')}</p>
         <p data-show='-eucountry'>{it.L('A binary option is a contract in which one party undertakes to pay the other party a specified amount if the value of a given asset changes in a specific direction within a predetermined period. The three major underlying asset classes for binary options offered by the Company are')}</p>
-        <p data-show='eucountry'>{it.L('A binary option is a contract in which one party undertakes to pay the other party a specified amount if the value of a given asset changes in a specific direction within a predetermined period. The one major underlying asset class for binary options offered by the Company is')}</p>
+        <p data-show='eucountry'>{it.L('A binary option is a contract in which one party undertakes to pay the other party a specified amount if the value of a given asset changes in a specific direction within a predetermined period. The major underlying asset class for binary options offered by the Company is synthetic indices.')}</p>
         <ul className='bullet'>
             <li data-show='-eucountry'>{it.L('Forex')}</li>
             <li data-show='-eucountry'>{it.L('Stock Indices')}</li>
             <li data-show='-eucountry'>{it.L('Commodities')}</li>
-            <li data-show='eucountry'>{it.L('Synthetic Indices')}</li>
         </ul>
 
         <h2 data-anchor='best-execution-factors'>{it.L('Best execution factors')}</h2>
