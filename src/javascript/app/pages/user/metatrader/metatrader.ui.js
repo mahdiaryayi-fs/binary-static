@@ -123,7 +123,7 @@ const MetaTraderUI = (() => {
 
                 $ddl_trade_server
                     .append(
-                        $('<div />', { id: trading_server.id, class: 'gr-padding-10 gr-parent' })
+                        $('<div />', { id: trading_server.id, class: 'gr-padding-10 gr-parent trade-server-item' })
                             .append($('<input />', input_attributes))
                             .append($('<label />', { htmlFor: trading_server.id })
                                 .append($('<span />', { text: label_text }))
@@ -817,7 +817,13 @@ const MetaTraderUI = (() => {
         });
 
         $form.find('#ddl_trade_server').off('click').on('click', (e) => {
-            $form.find('#ddl_trade_server').find('input').not(':input[disabled]').removeAttr('checked');
+            const $target_input = $(e.target).parents('.trade-server-item').children('input');
+
+            if ($target_input.attr('disabled')) return;
+
+            if ($target_input.length) {
+                $form.find('#ddl_trade_server').find('input').not(':input[disabled]').removeAttr('checked');
+            }
 
             if (e.target.nodeName === 'SPAN') {
                 $(e.target.parentElement).parent().find('input').not(':input[disabled]').attr('checked', 'checked');
