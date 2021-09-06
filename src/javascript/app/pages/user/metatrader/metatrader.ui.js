@@ -823,16 +823,7 @@ const MetaTraderUI = (() => {
 
             if ($target_input.length) {
                 $form.find('#ddl_trade_server').find('input').not(':input[disabled]').removeAttr('checked');
-            }
-
-            if (e.target.nodeName === 'SPAN') {
-                $(e.target.parentElement).parent().find('input').not(':input[disabled]').attr('checked', 'checked');
-            }
-            if (e.target.nodeName === 'LABEL') {
-                $(e.target.parentElement).find('input').not(':input[disabled]').attr('checked', 'checked');
-            }
-            if (e.target.nodeName === 'INPUT') {
-                $(e.target).not(':input[disabled]').attr('checked', 'checked');
+                $target_input.not(':input[disabled]').attr('checked', 'checked');
             }
 
             const new_user_submit_button = $form.find('#new_user_btn_submit_new_account');
