@@ -302,6 +302,7 @@ const MetaTrader = (() => {
                         new_password                    : req.mainPassword,
                         platform                        : 'mt5',
                     });
+                    BinarySocket.send({ get_account_status: 1 });
                     if (response.error) {
                         MetaTraderUI.displayFormMessage(response.error.message, action);
                         MetaTraderUI.enableButton(action, response);
