@@ -446,7 +446,7 @@ const MetaTraderConfig = (() => {
                             const deposit_input_value   = document.querySelector('#txt_amount_deposit').value;
                             const min_req_balance = Currency.getTransferLimits(Client.get('currency'), 'min', 'mt5');
 
-                            return +deposit_input_value > +min_req_balance;
+                            return +deposit_input_value >= +min_req_balance;
                         },
                         message: localize('Should be more than [_1]', Currency.getTransferLimits(Client.get('currency'), 'min', 'mt5')),
                     }],
