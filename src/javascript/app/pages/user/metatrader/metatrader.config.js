@@ -461,7 +461,7 @@ const MetaTraderConfig = (() => {
 
                             return +deposit_input_value >= +min_req_balance;
                         },
-                        message: localize('Should be more than [_1]', Currency.getTransferLimits(Client.get('currency'), 'min', 'mt5')),
+                        message: localize('To transfer funds to your MT5 account, enter an amount of [_1] or more', Currency.getTransferLimits(Client.get('currency'), 'min', 'mt5')),
                     }],
                     // check if amount is between min and max
                     ['number', {
