@@ -13,6 +13,7 @@ const urlForStatic     = require('../../../../_common/url').urlForStatic;
 const getHashValue     = require('../../../../_common/url').getHashValue;
 const getPropertyValue = require('../../../../_common/utility').getPropertyValue;
 const showLoadingImage = require('../../../../_common/utility').showLoadingImage;
+const isEuCountry      = require('../../../common/country_base').isEuCountry;
 
 const MetaTraderUI = (() => {
     let $container,
@@ -174,6 +175,9 @@ const MetaTraderUI = (() => {
         const $button = $mng_passwd.find('#password_change_button');
         const $confirm_button = $mng_passwd.find('#password_change_confirm_buttons .btn_ok');
         const $cancel_button = $mng_passwd.find('#password_change_confirm_buttons .btn_cancel');
+        const $trading_password_info = $mng_passwd.find('#trading_password_info');
+        const $trading_password_change_notice = $mng_passwd.find('.trading_password_change_notice');
+        
         const setStep = (step) => {
             switch (step) {
                 case STEPS.PASSWORD_INSERT:
@@ -201,6 +205,21 @@ const MetaTraderUI = (() => {
         $cancel_button.off('click').on('click', () => {
             setStep(STEPS.PASSWORD_INSERT);
         });
+
+        const mt5_label =  isEuCountry() ? 'CFDs' : 'MT5';
+        
+        $trading_password_info.text(
+            localize('Use MT5 password to sign in to any of your [_1] accounts when using MT5 apps on your mobile or other devices.',
+                mt5_label
+            )
+        );
+
+        $trading_password_change_notice.text(
+            localize('This will change the password to all of your [_1] accounts.',
+                mt5_label
+            )
+        );
+      
     };
 
     const populateAccountList = () => {
@@ -518,10 +537,13 @@ const MetaTraderUI = (() => {
         if ($target.prop('tagName').toLowerCase() !== 'a') {
             $target = $target.parents('a');
         }
-        $main_msg.setVisibility(0);
 
         const acc_type = Client.get('mt5_account');
         const action   = $target.attr('class').split(' ').find(c => /^act_/.test(c)).replace('act_', '');
+
+        if (!$action.find(`#frm_${action}`).length) {
+            $main_msg.setVisibility(0);
+        }
 
         const cloneForm = () => {
             $form = $templates.find(`#frm_${action}`).clone();
@@ -646,11 +668,6 @@ const MetaTraderUI = (() => {
                 $container.find(`[class~=act_${action}]`).addClass('selected');
                 return;
             }
-
-            if (!$action.find(`#frm_${action}`).length) {
-                $main_msg.setVisibility(0);
-            }
-
             cloneForm();
         });
     };
@@ -728,12 +745,13 @@ const MetaTraderUI = (() => {
         if (should_set_trading_password) {
             $form.find('#view_3').find('#trading_password_new_user').setVisibility(1);
         } else {
+            const mt5_label = isEuCountry() ? localize('CFDs') : localize('MT5 Financial');
             $form.find('#view_3').find('#trading_password_existing_user')
                 .html(localize(
-                    'Enter your MT5 password to add a [_1] MT5 [_2] account.',
+                    'Enter your MT5 password to add a [_1] [_2] account.',
                     [
                         is_demo ? localize('demo') : localize('real'),
-                        is_synthetic ? localize('Synthetic') : localize('CFDs'),
+                        is_synthetic ? localize('MT5 Synthetic') : mt5_label,
                     ]
                 ))
                 .setVisibility(1);
@@ -1257,8 +1275,10 @@ const MetaTraderUI = (() => {
             ok_text          : localize('Yes, I\'m sure'),
             cancel_text      : localize('Cancel'),
             localized_title  : localize('Are you sure?'),
-            localized_message: localize('You will not be able to change your fiat account currency after creating this CFDs account. Are you sure you want to proceed?'),
-            onConfirm        : () => {
+            localized_message: localize('You will not be able to change your fiat account currency after creating this [_1] account. Are you sure you want to proceed?',
+                [isEuCountry() ? 'CFDs' : 'MT5'],
+            ),
+            onConfirm: () => {
                 onConfirm();
                 submit(e);
             },
